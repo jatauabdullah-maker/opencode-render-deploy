@@ -1,13 +1,20 @@
-# Use official opencode Docker image
-FROM ghcr.io/anomalyco/opencode:latest
+# Use Alpine base
+FROM alpine:3.20
 
-# Install Node.js for npx (playwright MCP)
-USER root
-RUN apk add --no-cache nodejs npm
+# Install dependencies: Node.js for MCP servers, curl for downloads, wget for health check
+RUN apk add --no-cache nodejs npm curl wget
+
+# Download and install opencode binary (musl version for Alpine)
+ARG OPENCODE_VERSION=1.18.20
+RUN curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-x64-musl.tar.gz" \
+    | tar -xz -C /usr/local/bin && \
+    chmod +x /usr/local/bin/opencode && \
+    opencode --version
 
 # Create opencode user and config directory
 RUN mkdir -p /home/opencode/.config/opencode && \
     mkdir -p /home/opencode/.opencode/agent && \
+    adduser -D -h /home/opencode opencode && \
     chown -R opencode:opencode /home/opencode
 
 # Copy config with free models + websearch permissions
