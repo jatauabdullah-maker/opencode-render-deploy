@@ -1,12 +1,14 @@
-# Use Alpine base
-FROM alpine:3.20
+# Use Debian slim base (glibc, better compatibility)
+FROM debian:12-slim
 
 # Install dependencies: Node.js for MCP servers, curl for downloads, wget for health check
-RUN apk add --no-cache nodejs npm curl wget
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nodejs npm curl wget ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-# Download and install opencode binary (musl version for Alpine)
+# Download and install opencode binary
 ARG OPENCODE_VERSION=1.18.20
-RUN curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-x64-musl.tar.gz" \
+RUN curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-x64.tar.gz" \
     | tar -xz -C /usr/local/bin && \
     chmod +x /usr/local/bin/opencode && \
     opencode --version
@@ -14,7 +16,7 @@ RUN curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENC
 # Create opencode user and config directory
 RUN mkdir -p /home/opencode/.config/opencode && \
     mkdir -p /home/opencode/.opencode/agent && \
-    adduser -D -h /home/opencode opencode && \
+    useradd -m -d /home/opencode -s /bin/bash opencode && \
     chown -R opencode:opencode /home/opencode
 
 # Copy config with free models + websearch permissions
