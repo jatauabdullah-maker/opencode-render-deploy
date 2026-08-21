@@ -34,4 +34,5 @@ EXPOSE 4096
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:4096/doc || exit 1
 
-CMD ["opencode", "serve", "--hostname", "0.0.0.0", "--port", "4096", "--config", "/home/opencode/.config/opencode/opencode.jsonc"]
+# Use default config location (should auto-detect ~/.config/opencode/opencode.jsonc)
+CMD ["opencode", "serve", "--hostname", "0.0.0.0", "--port", "4096"]
