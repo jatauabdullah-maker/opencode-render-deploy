@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: opencode-headless
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /doc
+    envVars:
+      - key: OPENCODE_SERVER_PASSWORD
+        generateValue: true
+      - key: NVIDIA_API_KEY
+        sync: false
+    autoDeploy: true

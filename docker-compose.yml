@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  opencode:
+    build: .
+    ports:
+      - "4096:4096"
+    environment:
+      - OPENCODE_SERVER_PASSWORD=localdev
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY:-}
+    volumes:
+      - ~/.config/opencode:/home/opencode/.config/opencode:ro
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4096/doc"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
