@@ -1,11 +1,55 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "enabled_providers": ["opencode"],
+  "enabled_providers": ["opencode", "nvidia", "openrouter"],
   "provider": {
     "opencode": {
       "whitelist": [
-        "deepseek-v4-flash-free"
+        "deepseek-v4-flash-free",
+        "hy3-free",
+        "laguna-s-2.1-free",
+        "mimo-v2.5-free",
+        "muse-spark-1.2",
+        "nemotron-3-ultra-free",
+        "nemotron-3.5-lightning-free"
       ]
+    },
+    "nvidia": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "NVIDIA NIM (free)",
+      "options": {
+        "baseURL": "https://integrate.api.nvidia.com/v1",
+        "apiKey": "{env:NVIDIA_API_KEY}"
+      },
+      "whitelist": [
+        "z-ai/glm-5.2",
+        "meta/muse-glimmer-30b",
+        "nvidia/nemotron-3-ultra-550b-a55b",
+        "nvidia/nemotron-3-super-120b-a12b"
+      ],
+      "models": {
+        "z-ai/glm-5.2": {},
+        "meta/muse-glimmer-30b": {},
+        "nvidia/nemotron-3-ultra-550b-a55b": {},
+        "nvidia/nemotron-3-super-120b-a12b": {}
+      }
+    }
+  },
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true
+    },
+    "grep": {
+      "type": "remote",
+      "url": "https://mcp.grep.app",
+      "enabled": true
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "@playwright/mcp@latest"],
+      "enabled": true,
+      "timeout": 60000
     }
   }
 }
