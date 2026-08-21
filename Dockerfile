@@ -1,17 +1,19 @@
-FROM ghcr.io/anomalyco/opencode:latest
+# Use Node.js base image (includes npm for MCP servers)
+FROM node:20-alpine
 
-# Install Node.js for npx (playwright MCP)
-USER root
-RUN apk add --no-cache nodejs npm
+# Install opencode CLI globally
+RUN npm install -g opencode-ai
 
 # Create opencode user and config directory
 RUN mkdir -p /home/opencode/.config/opencode && \
+    mkdir -p /home/opencode/.opencode/agent && \
+    adduser -D -h /home/opencode opencode && \
     chown -R opencode:opencode /home/opencode
 
 # Copy config with free models + websearch permissions
 COPY --chown=opencode:opencode opencode.jsonc /home/opencode/.config/opencode/opencode.jsonc
 
-# Copy agent definitions (for websearch, etc.)
+# Copy agent definitions
 COPY --chown=opencode:opencode .opencode/agent/ /home/opencode/.opencode/agent/
 
 USER opencode
