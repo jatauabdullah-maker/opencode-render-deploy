@@ -4,6 +4,9 @@ FROM node:20-alpine
 # Install opencode CLI globally
 RUN npm install -g opencode-ai
 
+# Verify installation
+RUN opencode --version
+
 # Create opencode user and config directory
 RUN mkdir -p /home/opencode/.config/opencode && \
     mkdir -p /home/opencode/.opencode/agent && \
@@ -25,4 +28,5 @@ EXPOSE 4096
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:4096/doc || exit 1
 
-CMD ["opencode", "serve", "--hostname", "0.0.0.0", "--port", "4096"]
+# Start server with explicit config path
+CMD ["opencode", "serve", "--hostname", "0.0.0.0", "--port", "4096", "--config", "/home/opencode/.config/opencode/opencode.jsonc"]
